@@ -45,9 +45,10 @@ import SalesOverview from "./components/SalesOverview";
 import WorkWithTheRockets from "./components/WorkWithTheRockets";
 import Project from "./components/Project";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-
+import { useRecoilState } from "recoil";
+import { userState } from "../../../state/index";
 export default function Dashboard() {
-  const iconBoxInside = useColorModeValue("white", "white");
+  const [user, setUser] = useRecoilState(userState);
 
   return (
     <Stack style={{ marginTop: "80px" }}>

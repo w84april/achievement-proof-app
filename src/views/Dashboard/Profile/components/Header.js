@@ -13,7 +13,8 @@ const Header = ({
   backgroundHeader,
   backgroundProfile,
   avatarImage,
-  name,
+  firstName,
+  lastName,
   email,
   tabs,
 }) => {
@@ -87,7 +88,7 @@ const Header = ({
                 fontWeight="bold"
                 ms={{ sm: "8px", md: "0px" }}
               >
-                {name}
+                {firstName} {lastName}
               </Text>
               <Text
                 fontSize={{ sm: "sm", md: "md" }}
