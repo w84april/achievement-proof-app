@@ -46,7 +46,6 @@ var dashRoutes = [
   {
     name: "Аккаунт",
     category: "account",
-
     state: "pageCollapse",
     views: [
       {
@@ -56,6 +55,21 @@ var dashRoutes = [
         secondaryNavbar: true,
         component: Profile,
         layout: "/admin",
+      },
+      {
+        path: "/signin",
+        name: "Sign In",
+        icon: <DocumentIcon color="inherit" />,
+        component: SignIn,
+        layout: "/auth",
+      },
+      {
+        path: "/signup",
+        name: "Sign Up",
+        icon: <RocketIcon color="inherit" />,
+        secondaryNavbar: true,
+        component: SignUp,
+        layout: "/auth",
       },
     ],
   },

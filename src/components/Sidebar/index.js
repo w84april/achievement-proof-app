@@ -47,7 +47,7 @@ function Sidebar(props) {
         >
           <SidebarContent
             routes={routes}
-            logoText={"Сертификаты"}
+            logoText={"Достижения"}
             display="none"
             sidebarVariant={sidebarVariant}
           />

@@ -104,14 +104,7 @@ export default function AdminNavbar(props) {
       top="18px"
       w={{ sm: "calc(100vw - 30px)", xl: "calc(100vw - 75px - 275px)" }}
     >
-      <Flex
-        w="100%"
-        flexDirection={{
-          sm: "column",
-          md: "row",
-        }}
-        alignItems={{ xl: "center" }}
-      >
+      <Flex w="100%" flexDirection="row" alignItems={{ xl: "center" }}>
         <Box mb={{ sm: "8px", md: "0px" }}>
           <Breadcrumb>
             <BreadcrumbItem color={mainText}>
@@ -146,7 +139,7 @@ export default function AdminNavbar(props) {
             {brandText}
           </Link>
         </Box>
-        <Box ms="auto" w={{ sm: "100%", md: "unset" }}>
+        <Box ms="auto" w={{ md: "unset" }}>
           <AdminNavbarLinks
             onOpen={props.onOpen}
             logoText={props.logoText}
