@@ -7,7 +7,11 @@ export const UserWrapper = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (!localStorage.getItem("token") && pathname !== "/auth/signin") {
+    if (
+      !localStorage.getItem("token") &&
+      pathname !== "/auth/signin" &&
+      pathname !== "/auth/signup"
+    ) {
       history.push("/auth/signin");
     }
   });

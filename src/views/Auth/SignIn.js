@@ -16,12 +16,15 @@ import {
 } from "@chakra-ui/react";
 // Assets
 import { NavLink, useHistory } from "react-router-dom";
+import { userState } from "../../state/index";
+import { useRecoilState } from "recoil";
 import axios from "axios";
 
 function SignIn() {
   // Chakra color mode
   const titleColor = useColorModeValue("teal.300", "teal.200");
   const textColor = useColorModeValue("gray.400", "white");
+  const [user, setUser] = useRecoilState(userState);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
@@ -44,7 +47,7 @@ function SignIn() {
       });
 
       localStorage.setItem("token", user.data.token);
-
+      setUser(user.data.result);
       setSuccess(true);
       history.push("/");
     } catch (err) {
