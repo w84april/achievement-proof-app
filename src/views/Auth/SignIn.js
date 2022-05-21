@@ -58,7 +58,9 @@ function SignIn() {
 
   useEffect(() => {
     localStorage.removeItem("token");
+    setUser({});
   }, []);
+
   return (
     <Flex position="relative" mb="40px">
       <Flex

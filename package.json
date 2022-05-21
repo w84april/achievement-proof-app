@@ -37,7 +37,8 @@
     "react-swipeable-views": "0.14.0",
     "react-table": "7.7.0",
     "react-tagsinput": "3.19.0",
-    "recoil": "^0.7.3-alpha.2",
+    "recoil": "^0.6.1",
+    "recoil-persist": "^4.1.0",
     "stylis": "^4.0.13",
     "stylis-plugin-rtl": "^2.0.2"
   },
@@ -60,8 +61,11 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx-source": "^7.14.5",
+    "eslint": "^7.30.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.9",
     "prettier": "2.2.1"

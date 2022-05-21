@@ -10,7 +10,9 @@ import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 const ProfileInformation = ({
   title,
   description,
-  name,
+  firstName,
+  lastName,
+  fatherName,
   role,
   email,
   location,
@@ -32,16 +34,37 @@ const ProfileInformation = ({
           </Text>
           <Flex align="center" mb="18px">
             <Text fontSize="md" color={textColor} fontWeight="bold" me="10px">
-              Full Name:{" "}
+              Имя:{" "}
             </Text>
             <Text fontSize="md" color="gray.500" fontWeight="400">
-              {name}
+              {firstName}
             </Text>
           </Flex>
-
           <Flex align="center" mb="18px">
             <Text fontSize="md" color={textColor} fontWeight="bold" me="10px">
-              Email:{" "}
+              Фамилия:{" "}
+            </Text>
+            <Text fontSize="md" color="gray.500" fontWeight="400">
+              {lastName}
+            </Text>
+          </Flex>
+          <Flex align="center" mb="18px">
+            <Text fontSize="md" color={textColor} fontWeight="bold" me="10px">
+              Отчество:{" "}
+            </Text>
+            <Text fontSize="md" color="gray.500" fontWeight="400">
+              {fatherName}
+            </Text>
+          </Flex>
+          <Flex align="center" mb="18px">
+            <Text
+              fontSize="md"
+              as="span"
+              color={textColor}
+              fontWeight="bold"
+              me="10px"
+            >
+              Адрес эл. почты:{" "}
             </Text>
             <Text fontSize="md" color="gray.500" fontWeight="400">
               {email}
