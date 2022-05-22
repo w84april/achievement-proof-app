@@ -18,13 +18,18 @@ import {
 import { useState, useRef } from "react";
 import { ViewIcon, ViewOffIcon, AttachmentIcon } from "@chakra-ui/icons";
 import { useForm, UseFormRegisterReturn } from "react-hook-form";
-
+import { useRecoilState } from "recoil";
+import { userState } from "../../../state/index";
+import axios from "axios";
+axios.defaults.baseURL = process.env.REACT_APP_API;
+import { useHistory } from "react-router-dom";
 const FileUpload = (props) => {
   const { register, accept, multiple, children } = props;
   const inputRef = useRef();
   const { ref, ...rest } = register;
 
   const handleClick = () => inputRef.current?.click();
+  console.log("here");
 
   return (
     <InputGroup onClick={handleClick}>
@@ -45,19 +50,44 @@ const FileUpload = (props) => {
 };
 
 export default function SignupCard() {
-  const [showPassword, setShowPassword] = useState(false);
+  const [user, setUser] = useRecoilState(userState);
+  const token = localStorage.getItem("token");
+  const history = useHistory();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [project, setProject] = useState("");
-  const [team, setTeam] = useState("");
-  const [event, setEvent] = useState("");
-  const [result, setResult] = useState("");
-  const onSubmit = handleSubmit((data) => {
+
+  const onSubmit = handleSubmit(async (data) => {
     console.log("On Submit: ", data);
-    console.log(project, team, event, result);
+    try {
+      const { name, team, event, result, uploaded_file } = data;
+      const formData = new FormData();
+      formData.append("projectName", name);
+      formData.append("team", team);
+      formData.append("event", event);
+      formData.append("result", result);
+      formData.append("uploaded_file", uploaded_file[0]);
+      formData.append("owner", user.id);
+      const achievement = await axios({
+        method: "post",
+        url: "/achievement",
+        headers: {
+          Authorization: token,
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      });
+      console.log(achievement);
+      if (achievement.success) {
+        console.log("success");
+      }
+    } catch (err) {
+      if (err.response.status === 403) {
+        history.push("/auth/signin");
+      }
+    }
   });
 
   const validateFiles = (value) => {
@@ -92,36 +122,25 @@ export default function SignupCard() {
           boxShadow={"lg"}
           p={8}
         >
-          <form onSubmit={onSubmit}>
+          <form method="post" onSubmit={onSubmit} encType="multipart/form-data">
             <Stack spacing={4}>
               <HStack>
                 <Box>
                   <FormControl id="project" isRequired>
                     <FormLabel>Название проекта</FormLabel>
-                    <Input
-                      type="text"
-                      onChange={(e) => setProject(e.target.value)}
-                    />
+                    <Input type="text" {...register("name")} />
                   </FormControl>
                 </Box>
                 <Box>
                   <FormControl id="team">
                     <FormLabel>Название команды</FormLabel>
-                    <Input
-                      name="team"
-                      type="text"
-                      onChange={(e) => setTeam(e.target.value)}
-                    />
+                    <Input name="team" type="text" {...register("team")} />
                   </FormControl>
                 </Box>
               </HStack>
               <FormControl id="event" isRequired>
                 <FormLabel>Мероприятие</FormLabel>
-                <Input
-                  name="event"
-                  type="email"
-                  onChange={(e) => setEvent(e.target.value)}
-                />
+                <Input name="event" type="text" {...register("event")} />
               </FormControl>
               <FormControl id="result" isRequired>
                 <FormLabel>Результат</FormLabel>
@@ -129,11 +148,11 @@ export default function SignupCard() {
                   id="result"
                   placeholder="Результат"
                   size="md"
-                  onChange={(e) => setResult(e.target.value)}
+                  {...register("result")}
                 >
-                  <option value="option1">Option 1</option>
-                  <option value="option2">Option 2</option>
-                  <option value="option3">Option 3</option>
+                  <option value="0">Победитель</option>
+                  <option value="1">Призер</option>
+                  <option value="2">Участник</option>
                 </Select>
               </FormControl>
               <FormControl id="file" isRequired>
@@ -141,7 +160,9 @@ export default function SignupCard() {
                 <FileUpload
                   accept={"image/*"}
                   multiple
-                  register={register("file_", { validate: validateFiles })}
+                  register={register("uploaded_file", {
+                    validate: validateFiles,
+                  })}
                 >
                   <Button leftIcon={<AttachmentIcon />}>Загрузить</Button>
                 </FileUpload>

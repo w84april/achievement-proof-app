@@ -1,20 +1,27 @@
 import React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getUserInfo } from "api/get-user-info";
-export const useGetUser = (userId) => {
+import { useHistory } from "react-router-dom";
+export const useGetUser = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [userInfo, setUserInfo] = useState();
   const token = localStorage.getItem("token");
-
+  const history = useHistory();
   const getData = useCallback(() => {
-    if (!userId || !token) {
-      return;
+    if (!token) {
+      history.push("/auth/signin");
     }
-    getUserInfo(userId, token).then((user) => {
-      setUserInfo(user);
-      setIsLoading(false);
-    });
-  }, [userId]);
+    getUserInfo(token)
+      .then((user) => {
+        setUserInfo(user);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        if (err.response.status === 403) {
+          history.push("/auth/signin");
+        }
+      });
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);

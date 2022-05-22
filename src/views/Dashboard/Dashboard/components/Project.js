@@ -1,36 +1,94 @@
 import {
-  Badge,
   Button,
   Center,
   Flex,
   Heading,
   Image,
-  Link,
   Stack,
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useRecoilState } from "recoil";
+import { userState } from "state";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+export default function Project({
+  id,
+  projectName,
+  team,
+  approved,
+  event,
+  ownerFirstName,
+  ownerLastName,
+  ownerFatherName,
+  result,
+  file,
+}) {
+  const resultString = ["Победитель", "Призер", "Участник"];
+  const [user, setUser] = useRecoilState(userState);
+  const history = useHistory();
+  const { role } = user;
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+  const token = localStorage.getItem("token");
+  const handeApprove = async (approved) => {
+    try {
+      await axios({
+        method: "patch",
+        url: "/achievement",
+        headers: {
+          Authorization: token,
+        },
+        data: {
+          id,
+          approved,
+        },
+      });
+    } catch (err) {
+      if (err.response.status === 403) {
+        history.push("/auth/signin");
+      }
+    }
+  };
 
-export default function Project() {
+  const handleDelete = async () => {
+    try {
+      await axios({
+        method: "delete",
+        url: "/achievement",
+        headers: {
+          Authorization: token,
+        },
+        params: {
+          role,
+          id,
+        },
+      });
+    } catch (err) {
+      if (err.response.status === 403) {
+        history.push("/auth/signin");
+      }
+    }
+  };
+
   return (
     <Center py={6}>
       <Stack
         borderWidth="1px"
         borderRadius="lg"
-        w={{ sm: "100%", md: "540px" }}
-        height={{ sm: "476px", md: "20rem" }}
-        direction={{ base: "column", md: "row" }}
+        w={{ sm: "100%", md: "640px" }}
+        maxW={"400px"}
+        direction={"column"}
         bg={useColorModeValue("white", "gray.900")}
         boxShadow={"2xl"}
         padding={4}
+        h="full"
       >
-        <Flex flex={1} bg="blue.200">
+        <Flex flex={1} maxH={"240px"} justify={"center"}>
           <Image
             objectFit="cover"
             boxSize="100%"
-            src={
-              "https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-            }
+            src={`${process.env.REACT_APP_API}/image/${file}`}
+            width="auto"
           />
         </Flex>
         <Stack
@@ -42,30 +100,92 @@ export default function Project() {
           pt={2}
         >
           <Stack>
-            <Text fontWeight={600} color={"red.200"} size="sm" mb={4}>
-              Не подтверждено
-            </Text>
-            {/* <Text fontWeight={600} color={"green.200"} size="sm" mb={4}>
-              Подтверждено
-            </Text> */}
+            {approved ? (
+              <Text fontWeight={600} color={"green.200"} size="sm" mb={4}>
+                Подтверждено
+              </Text>
+            ) : (
+              <Text fontWeight={600} color={"red.200"} size="sm" mb={4}>
+                Не подтверждено
+              </Text>
+            )}
             <Heading fontSize={"2xl"} fontFamily={"body"}>
-              Hackaton Cyber Garden 2020
+              {event}
             </Heading>
-            <Text fontWeight={600} color={"gray.500"} size="sm" mb={4}>
-              Barbariki
+
+            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+              Команда:{" "}
+              <Text as="span" color="gray.500">
+                {team}
+              </Text>
             </Text>
-            <Text fontWeight={600} color={"gray.500"} size="sm" mb={4}>
-              Полиенко Даниил Викторович
+            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+              Проект:{" "}
+              <Text as="span" color="gray.500">
+                {projectName}
+              </Text>
             </Text>
-            <Text fontWeight={400} size="sm" mb={4}>
-              Победитель
+            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+              Участник:{" "}
+              <Text as="span" color="gray.500">
+                {ownerLastName} {ownerFirstName} {ownerFatherName}
+              </Text>
+            </Text>
+            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+              Результат:{" "}
+              <Text as="span" color="gray.500">
+                {resultString[result]}
+              </Text>
             </Text>
           </Stack>
+          {role === 1 && (
+            <Stack
+              width={"100%"}
+              mt={"2rem"}
+              direction={"row"}
+              paddingTop={2}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
+              <Button
+                flex={1}
+                fontSize={"sm"}
+                rounded={"full"}
+                bg={"green.400"}
+                color={"white"}
+                _focus={{
+                  bg: "green.500",
+                }}
+                _hover={{
+                  bg: "green.500",
+                }}
+                onClick={() => handeApprove(true)}
+              >
+                Подтвердить
+              </Button>
+              <Button
+                flex={1}
+                fontSize={"sm"}
+                rounded={"full"}
+                bg={"red.400"}
+                color={"white"}
+                _hover={{
+                  bg: "red.600",
+                }}
+                _focus={{
+                  bg: "red.600",
+                }}
+                onClick={() => handeApprove(false)}
+              >
+                Отклонить
+              </Button>
+            </Stack>
+          )}
           <Stack
             width={"100%"}
             mt={"2rem"}
             direction={"row"}
-            padding={2}
+            paddingTop={2}
             justifyContent={"space-between"}
             alignItems={"center"}
           >
@@ -73,21 +193,7 @@ export default function Project() {
               flex={1}
               fontSize={"sm"}
               rounded={"full"}
-              bg={"green.400"}
-              color={"white"}
-              _focus={{
-                bg: "green.500",
-              }}
-              _hover={{
-                bg: "green.500",
-              }}
-            >
-              Подтвердить
-            </Button>
-            <Button
-              flex={1}
-              fontSize={"sm"}
-              rounded={"full"}
+              width={"100%"}
               bg={"red.400"}
               color={"white"}
               _hover={{
@@ -96,34 +202,11 @@ export default function Project() {
               _focus={{
                 bg: "red.600",
               }}
-            >
-              Отклонить
-            </Button>
-          </Stack>
-          {/* <Stack
-            width={"100%"}
-            mt={"2rem"}
-            direction={"row"}
-            padding={2}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <Button
-              flex={1}
-              fontSize={"sm"}
-              rounded={"full"}
-              bg={"red.400"}
-              color={"white"}
-              _hover={{
-                bg: "red.600",
-              }}
-              _focus={{
-                bg: "red.600",
-              }}
+              onClick={handleDelete}
             >
               Удалить
             </Button>
-          </Stack> */}
+          </Stack>
         </Stack>
       </Stack>
     </Center>
