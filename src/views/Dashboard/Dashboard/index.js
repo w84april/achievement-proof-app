@@ -21,7 +21,7 @@ import {
 // assets
 
 import React, { useState } from "react";
-
+import { useDebounce } from "hooks/use-debounce";
 import Project from "./components/Project";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useGetItems } from "../../../hooks/use-get-items";
@@ -29,8 +29,8 @@ export default function Dashboard() {
   const [isApproved, setIsApproved] = useState("2");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(false);
-
-  const { items, isLoading } = useGetItems(isApproved, search, sort);
+  const debouncedSearch = useDebounce(search, 500);
+  const { items, isLoading } = useGetItems(isApproved, debouncedSearch, sort);
   console.log(items);
   return (
     <Stack style={{ marginTop: "80px" }}>
