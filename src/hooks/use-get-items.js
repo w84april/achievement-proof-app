@@ -20,7 +20,7 @@ export const useGetItems = (isApproved, search, sort) => {
     const approved =
       isApproved === "1" ? true : isApproved === "2" ? false : null;
     const sortString = sort ? "DESC" : "ASC";
-    getItems(token, approved, search, sortString)
+    getItems(token, approved, search, sortString, role)
       .then((items) => {
         setItems(items);
         setIsLoading(false);
