@@ -1,13 +1,18 @@
 import axios from "axios";
 
-export const getUserInfo = async (token) => {
+export const getItems = async (token, approved, search, sort) => {
   axios.defaults.baseURL = process.env.REACT_APP_API;
 
   const res = await axios({
     method: "get",
-    url: "/user",
+    url: "/achievement",
     headers: {
       Authorization: token,
+    },
+    params: {
+      approved,
+      search,
+      sort,
     },
   });
   return res.data;

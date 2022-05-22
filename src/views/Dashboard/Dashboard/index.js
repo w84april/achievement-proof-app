@@ -1,12 +1,8 @@
 // Chakra imports
 import {
   Flex,
-  Grid,
-  Image,
   SimpleGrid,
-  useColorModeValue,
   Stack,
-  Select,
   Popover,
   PopoverTrigger,
   Button,
@@ -23,33 +19,19 @@ import {
   Checkbox,
 } from "@chakra-ui/react";
 // assets
-import peopleImage from "assets/img/people-image.png";
-import logoChakra from "assets/svg/logo-white.svg";
-import BarChart from "components/Charts/BarChart";
-import LineChart from "components/Charts/LineChart";
-// Custom icons
-import {
-  CartIcon,
-  DocumentIcon,
-  GlobeIcon,
-  WalletIcon,
-} from "components/Icons/Icons.js";
-import React from "react";
-import { dashboardTableData, timelineData } from "variables/general";
-import ActiveUsers from "./components/ActiveUsers";
-import BuiltByDevelopers from "./components/BuiltByDevelopers";
-import MiniStatistics from "./components/MiniStatistics";
-import OrdersOverview from "./components/OrdersOverview";
-import Projects from "./components/Projects";
-import SalesOverview from "./components/SalesOverview";
-import WorkWithTheRockets from "./components/WorkWithTheRockets";
+
+import React, { useState } from "react";
+
 import Project from "./components/Project";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import { useRecoilState } from "recoil";
-import { userState } from "../../../state/index";
+import { useGetItems } from "../../../hooks/use-get-items";
 export default function Dashboard() {
-  const [user, setUser] = useRecoilState(userState);
+  const [isApproved, setIsApproved] = useState("2");
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState(false);
 
+  const { items, isLoading } = useGetItems(isApproved, search, sort);
+  console.log(items);
   return (
     <Stack style={{ marginTop: "80px" }}>
       <Flex justifyContent="space-between" mt={4} gap="20px">
@@ -78,15 +60,19 @@ export default function Dashboard() {
                 <Text fontWeight={600} size="sm" mb={4}>
                   Подтверждено
                 </Text>
-                <RadioGroup defaultValue="2">
+                <RadioGroup
+                  defaultValue={false}
+                  onChange={setIsApproved}
+                  value={isApproved}
+                >
                   <Stack spacing={5} direction="row">
-                    <Radio colorScheme="red" value="1">
+                    <Radio colorScheme="green" value="1">
                       Да
                     </Radio>
-                    <Radio colorScheme="green" value="2">
+                    <Radio colorScheme="red" value="2">
                       Нет
                     </Radio>
-                    <Radio colorScheme="green" value="3">
+                    <Radio colorScheme="blue" value="3">
                       Показать все
                     </Radio>
                   </Stack>
@@ -95,19 +81,26 @@ export default function Dashboard() {
             </PopoverContent>
           </Popover>
           <Box>
-            <Input variant="outline" placeholder="Поиск" />
+            <Input
+              variant="outline"
+              placeholder="Поиск"
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </Box>
         </Stack>
         <Stack spacing={5} direction="row">
-          <Checkbox colorScheme="blue">Сортировать по убыванию</Checkbox>
+          <Checkbox
+            colorScheme="blue"
+            onChange={(e) => setSort(e.target.checked)}
+            checked={sort}
+          >
+            Сортировать по убыванию
+          </Checkbox>
         </Stack>
       </Flex>
 
       <SimpleGrid columns={{ sm: 1, md: 2, xl: 3 }} spacing="24px">
-        <Project />
-        <Project />
-        <Project />
-        <Project />
+        {items && items.rows.map((item) => <Project key={item.id} {...item} />)}
       </SimpleGrid>
     </Stack>
   );

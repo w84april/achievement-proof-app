@@ -150,9 +150,9 @@ export default function SignupCard() {
                   size="md"
                   {...register("result")}
                 >
-                  <option value="1">Победитель</option>
-                  <option value="2">Призер</option>
-                  <option value="3">Участник</option>
+                  <option value="0">Победитель</option>
+                  <option value="1">Призер</option>
+                  <option value="2">Участник</option>
                 </Select>
               </FormControl>
               <FormControl id="file" isRequired>

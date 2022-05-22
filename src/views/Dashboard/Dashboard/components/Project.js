@@ -9,17 +9,33 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  Box,
+  bgColor,
+  Icon,
 } from "@chakra-ui/react";
 
-export default function Project() {
+export default function Project({
+  projectName,
+  team,
+  approved,
+  event,
+  ownerFirstName,
+  ownerLastName,
+  ownerFatherName,
+  result,
+  file,
+}) {
+  const resultString = ["Победитель", "Призер", "Участник"];
+  const bgColor = useColorModeValue("#F8F9FA", "gray.800");
+  const nameColor = useColorModeValue("gray.500", "white");
+
   return (
     <Center py={6}>
       <Stack
         borderWidth="1px"
         borderRadius="lg"
-        w={{ sm: "100%", md: "540px" }}
-        height={{ sm: "476px", md: "20rem" }}
-        direction={{ base: "column", md: "row" }}
+        w={{ sm: "100%", md: "640px" }}
+        direction={"column"}
         bg={useColorModeValue("white", "gray.900")}
         boxShadow={"2xl"}
         padding={4}
@@ -28,9 +44,7 @@ export default function Project() {
           <Image
             objectFit="cover"
             boxSize="100%"
-            src={
-              "https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-            }
+            src={`${process.env.REACT_APP_API}/image/${file}`}
           />
         </Flex>
         <Stack
@@ -42,30 +56,73 @@ export default function Project() {
           pt={2}
         >
           <Stack>
-            <Text fontWeight={600} color={"red.200"} size="sm" mb={4}>
-              Не подтверждено
-            </Text>
-            {/* <Text fontWeight={600} color={"green.200"} size="sm" mb={4}>
-              Подтверждено
-            </Text> */}
+            {approved ? (
+              <Text fontWeight={600} color={"green.200"} size="sm" mb={4}>
+                Подтверждено
+              </Text>
+            ) : (
+              <Text fontWeight={600} color={"red.200"} size="sm" mb={4}>
+                Не подтверждено
+              </Text>
+            )}
             <Heading fontSize={"2xl"} fontFamily={"body"}>
-              Hackaton Cyber Garden 2020
+              {event}
             </Heading>
-            <Text fontWeight={600} color={"gray.500"} size="sm" mb={4}>
-              Barbariki
+            {/* <Box p="24px" bg={bgColor} my="22px" borderRadius="12px">
+              <Flex justify="space-between" w="100%">
+                <Flex direction="column" maxWidth="70%">
+                  <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+                    Company Name:{" "}
+                    <Text as="span" color="gray.500">
+                      {team}
+                    </Text>
+                  </Text>
+                  <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+                    Email Address:{" "}
+                    <Text as="span" color="gray.500">
+                      {projectName}
+                    </Text>
+                  </Text>
+                  <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+                    VAT Number:{" "}
+                    <Text as="span" color="gray.500">
+                      {ownerLastName} {ownerFirstName} {ownerFatherName}
+                    </Text>
+                  </Text>
+                </Flex>
+              </Flex>
+            </Box> */}
+
+            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+              Команда:{" "}
+              <Text as="span" color="gray.500">
+                {team}
+              </Text>
             </Text>
-            <Text fontWeight={600} color={"gray.500"} size="sm" mb={4}>
-              Полиенко Даниил Викторович
+            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+              Проект:{" "}
+              <Text as="span" color="gray.500">
+                {projectName}
+              </Text>
             </Text>
-            <Text fontWeight={400} size="sm" mb={4}>
-              Победитель
+            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+              Участник:{" "}
+              <Text as="span" color="gray.500">
+                {ownerLastName} {ownerFirstName} {ownerFatherName}
+              </Text>
+            </Text>
+            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+              Результат:{" "}
+              <Text as="span" color="gray.500">
+                {resultString[result]}
+              </Text>
             </Text>
           </Stack>
           <Stack
             width={"100%"}
             mt={"2rem"}
             direction={"row"}
-            padding={2}
+            paddingTop={2}
             justifyContent={"space-between"}
             alignItems={"center"}
           >

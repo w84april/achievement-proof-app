@@ -20,7 +20,7 @@ function Profile() {
     "linear-gradient(112.83deg, rgba(255, 255, 255, 0.21) 0%, rgba(255, 255, 255, 0) 110.84%)"
   );
   const [user, setUser] = useRecoilState(userState);
-  const { userInfo, isLoading } = useGetUser(user.id);
+  const { userInfo, isLoading } = useGetUser();
 
   const { firstName, lastName, fatherName, email, role } = userInfo || {};
   return (
