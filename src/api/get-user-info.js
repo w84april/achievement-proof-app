@@ -14,6 +14,5 @@ export const getUserInfo = async (userId, token) => {
       id: userId,
     },
   });
-
   return res.data;
 };
