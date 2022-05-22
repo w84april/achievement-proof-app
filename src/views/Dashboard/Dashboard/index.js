@@ -29,8 +29,14 @@ export default function Dashboard() {
   const [isApproved, setIsApproved] = useState("2");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(false);
+  const [result, setResult] = useState("3");
   const debouncedSearch = useDebounce(search, 500);
-  const { items, isLoading } = useGetItems(isApproved, debouncedSearch, sort);
+  const { items, isLoading } = useGetItems(
+    isApproved,
+    debouncedSearch,
+    result,
+    sort
+  );
   console.log(items);
   return (
     <Stack style={{ marginTop: "80px" }}>
@@ -50,7 +56,7 @@ export default function Dashboard() {
                 Фильтрация
               </Button>
             </PopoverTrigger>
-            <PopoverContent _focus={{ boxShadown: "none" }}>
+            <PopoverContent _focus={{ boxShadown: "none" }} w={"unset"}>
               <PopoverArrow />
               <PopoverCloseButton />
               <PopoverHeader fontWeight="bold">
@@ -71,6 +77,29 @@ export default function Dashboard() {
                     </Radio>
                     <Radio colorScheme="red" value="2">
                       Нет
+                    </Radio>
+                    <Radio colorScheme="blue" value="3">
+                      Показать все
+                    </Radio>
+                  </Stack>
+                </RadioGroup>
+                <Text fontWeight={600} size="sm" mb={4} mt={4}>
+                  Результат
+                </Text>
+                <RadioGroup
+                  defaultValue={false}
+                  onChange={setResult}
+                  value={result}
+                >
+                  <Stack spacing={5} direction="row">
+                    <Radio colorScheme="blue" value="0">
+                      Победитель
+                    </Radio>
+                    <Radio colorScheme="blue" value="1">
+                      Призер
+                    </Radio>
+                    <Radio colorScheme="blue" value="2">
+                      Участник
                     </Radio>
                     <Radio colorScheme="blue" value="3">
                       Показать все
