@@ -99,7 +99,7 @@ export default function Dashboard() {
         </Stack>
       </Flex>
 
-      <SimpleGrid columns={{ sm: 1, md: 2, xl: 3 }} spacing="24px">
+      <SimpleGrid columns={{ sm: 1, lg: 2, xl: 4 }} spacing="24px">
         {items && items.rows.map((item) => <Project key={item.id} {...item} />)}
       </SimpleGrid>
     </Stack>

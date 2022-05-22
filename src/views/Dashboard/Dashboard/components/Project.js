@@ -1,20 +1,19 @@
 import {
-  Badge,
   Button,
   Center,
   Flex,
   Heading,
   Image,
-  Link,
   Stack,
   Text,
   useColorModeValue,
-  Box,
-  bgColor,
-  Icon,
 } from "@chakra-ui/react";
-
+import { useRecoilState } from "recoil";
+import { userState } from "state";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 export default function Project({
+  id,
   projectName,
   team,
   approved,
@@ -26,8 +25,50 @@ export default function Project({
   file,
 }) {
   const resultString = ["Победитель", "Призер", "Участник"];
-  const bgColor = useColorModeValue("#F8F9FA", "gray.800");
-  const nameColor = useColorModeValue("gray.500", "white");
+  const [user, setUser] = useRecoilState(userState);
+  const history = useHistory();
+  const { role } = user;
+  axios.defaults.baseURL = process.env.REACT_APP_API;
+  const token = localStorage.getItem("token");
+  const handeApprove = async (approved) => {
+    try {
+      await axios({
+        method: "patch",
+        url: "/achievement",
+        headers: {
+          Authorization: token,
+        },
+        data: {
+          id,
+          approved,
+        },
+      });
+    } catch (err) {
+      if (err.response.status === 403) {
+        history.push("/auth/signin");
+      }
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axios({
+        method: "delete",
+        url: "/achievement",
+        headers: {
+          Authorization: token,
+        },
+        params: {
+          role,
+          id,
+        },
+      });
+    } catch (err) {
+      if (err.response.status === 403) {
+        history.push("/auth/signin");
+      }
+    }
+  };
 
   return (
     <Center py={6}>
@@ -35,16 +76,19 @@ export default function Project({
         borderWidth="1px"
         borderRadius="lg"
         w={{ sm: "100%", md: "640px" }}
+        maxW={"400px"}
         direction={"column"}
         bg={useColorModeValue("white", "gray.900")}
         boxShadow={"2xl"}
         padding={4}
+        h="full"
       >
-        <Flex flex={1} bg="blue.200">
+        <Flex flex={1} maxH={"240px"} justify={"center"}>
           <Image
             objectFit="cover"
             boxSize="100%"
             src={`${process.env.REACT_APP_API}/image/${file}`}
+            width="auto"
           />
         </Flex>
         <Stack
@@ -68,30 +112,6 @@ export default function Project({
             <Heading fontSize={"2xl"} fontFamily={"body"}>
               {event}
             </Heading>
-            {/* <Box p="24px" bg={bgColor} my="22px" borderRadius="12px">
-              <Flex justify="space-between" w="100%">
-                <Flex direction="column" maxWidth="70%">
-                  <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-                    Company Name:{" "}
-                    <Text as="span" color="gray.500">
-                      {team}
-                    </Text>
-                  </Text>
-                  <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-                    Email Address:{" "}
-                    <Text as="span" color="gray.500">
-                      {projectName}
-                    </Text>
-                  </Text>
-                  <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-                    VAT Number:{" "}
-                    <Text as="span" color="gray.500">
-                      {ownerLastName} {ownerFirstName} {ownerFatherName}
-                    </Text>
-                  </Text>
-                </Flex>
-              </Flex>
-            </Box> */}
 
             <Text color="gray.400" fontSize="sm" fontWeight="semibold">
               Команда:{" "}
@@ -118,6 +138,49 @@ export default function Project({
               </Text>
             </Text>
           </Stack>
+          {role === 1 && (
+            <Stack
+              width={"100%"}
+              mt={"2rem"}
+              direction={"row"}
+              paddingTop={2}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
+              <Button
+                flex={1}
+                fontSize={"sm"}
+                rounded={"full"}
+                bg={"green.400"}
+                color={"white"}
+                _focus={{
+                  bg: "green.500",
+                }}
+                _hover={{
+                  bg: "green.500",
+                }}
+                onClick={() => handeApprove(true)}
+              >
+                Подтвердить
+              </Button>
+              <Button
+                flex={1}
+                fontSize={"sm"}
+                rounded={"full"}
+                bg={"red.400"}
+                color={"white"}
+                _hover={{
+                  bg: "red.600",
+                }}
+                _focus={{
+                  bg: "red.600",
+                }}
+                onClick={() => handeApprove(false)}
+              >
+                Отклонить
+              </Button>
+            </Stack>
+          )}
           <Stack
             width={"100%"}
             mt={"2rem"}
@@ -130,21 +193,7 @@ export default function Project({
               flex={1}
               fontSize={"sm"}
               rounded={"full"}
-              bg={"green.400"}
-              color={"white"}
-              _focus={{
-                bg: "green.500",
-              }}
-              _hover={{
-                bg: "green.500",
-              }}
-            >
-              Подтвердить
-            </Button>
-            <Button
-              flex={1}
-              fontSize={"sm"}
-              rounded={"full"}
+              width={"100%"}
               bg={"red.400"}
               color={"white"}
               _hover={{
@@ -153,34 +202,11 @@ export default function Project({
               _focus={{
                 bg: "red.600",
               }}
-            >
-              Отклонить
-            </Button>
-          </Stack>
-          {/* <Stack
-            width={"100%"}
-            mt={"2rem"}
-            direction={"row"}
-            padding={2}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <Button
-              flex={1}
-              fontSize={"sm"}
-              rounded={"full"}
-              bg={"red.400"}
-              color={"white"}
-              _hover={{
-                bg: "red.600",
-              }}
-              _focus={{
-                bg: "red.600",
-              }}
+              onClick={handleDelete}
             >
               Удалить
             </Button>
-          </Stack> */}
+          </Stack>
         </Stack>
       </Stack>
     </Center>
