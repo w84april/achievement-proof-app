@@ -1,6 +1,14 @@
 import axios from "axios";
 
-export const getItems = async (token, approved, search, sort, role) => {
+export const getItems = async (
+  token,
+  approved,
+  search,
+  result,
+  sort,
+  page,
+  role
+) => {
   axios.defaults.baseURL = process.env.REACT_APP_API;
   console.log(typeof role);
   const res = await axios({
@@ -12,7 +20,9 @@ export const getItems = async (token, approved, search, sort, role) => {
     params: {
       approved,
       search,
+      result,
       sort,
+      page,
       role,
     },
   });

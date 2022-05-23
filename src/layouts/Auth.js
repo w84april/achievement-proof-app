@@ -2,7 +2,6 @@
 import { Box, ChakraProvider, Portal } from "@chakra-ui/react";
 import Footer from "components/Footer/Footer.js";
 // core components
-import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import routes from "routes.js";
@@ -17,6 +16,7 @@ export default function Pages(props) {
     // Specify how to clean up after this effect:
     return function cleanup() {};
   });
+
   const getActiveRoute = (routes) => {
     let activeRoute = "Default Brand Text";
     for (let i = 0; i < routes.length; i++) {

@@ -1,0 +1,39 @@
+.paginator {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+
+  li {
+    a {
+      padding: 4px 8px;
+      color: gray;
+      text-decoration: none;
+      font-size: 14px;
+      outline: none;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    &.selected {
+      a {
+        color: black;
+      }
+    }
+
+    &.previous,
+    &.next {
+      a {
+        padding: 6px 8px;
+        font-size: 10px;
+      }
+
+      &.disabled {
+        a {
+          opacity: 0.6;
+          cursor: default;
+        }
+      }
+    }
+  }
+}

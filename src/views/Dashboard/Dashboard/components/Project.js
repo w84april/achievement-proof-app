@@ -7,11 +7,15 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  useToast,
+  useDisclosure,
+  Modal,
 } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
 import { userState } from "state";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { useMemo, useState } from "react";
 export default function Project({
   id,
   projectName,
@@ -23,12 +27,19 @@ export default function Project({
   ownerFatherName,
   result,
   file,
+  onOpen,
+  setModalImage,
+  setModalUserName,
+  setFetchTrigger,
+  fetchTrigger,
 }) {
   const resultString = ["Победитель", "Призер", "Участник"];
   const [user, setUser] = useRecoilState(userState);
   const history = useHistory();
   const { role } = user;
+  const toast = useToast();
   axios.defaults.baseURL = process.env.REACT_APP_API;
+
   const token = localStorage.getItem("token");
   const handeApprove = async (approved) => {
     try {
@@ -43,9 +54,29 @@ export default function Project({
           approved,
         },
       });
+      toast({
+        title: `Успешно ${approved === "1" ? "подтверждено" : "отклонено"}`,
+        status: "success",
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setFetchTrigger(!fetchTrigger);
     } catch (err) {
       if (err.response.status === 403) {
+        toast({
+          title: "Необходима авторизация",
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
         history.push("/auth/signin");
+      } else {
+        toast({
+          title: `Ошибка ${approved === "1" ? "подтверждения" : "отклонения"}`,
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
       }
     }
   };
@@ -63,13 +94,61 @@ export default function Project({
           id,
         },
       });
+      toast({
+        title: "Успешно удалено",
+        status: "success",
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setFetchTrigger(!fetchTrigger);
     } catch (err) {
       if (err.response.status === 403) {
+        toast({
+          title: "Необходима авторизация",
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
         history.push("/auth/signin");
+      } else {
+        toast({
+          title: "Ошибка удаления",
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
       }
     }
   };
 
+  const approveState = useMemo(() => {
+    switch (approved) {
+      case 1:
+        return (
+          <Text fontWeight={600} color={"green.200"} size="sm" mb={4}>
+            Подтверждено
+          </Text>
+        );
+      case 2:
+        return (
+          <Text fontWeight={600} color={"red.200"} size="sm" mb={4}>
+            Не подтверждено
+          </Text>
+        );
+      case 3:
+        return (
+          <Text fontWeight={600} color={"gray.400"} size="sm" mb={4}>
+            Ожидает подтверждения
+          </Text>
+        );
+    }
+  }, [approved]);
+
+  const handleOpenModal = () => {
+    setModalImage(`${process.env.REACT_APP_API}/image/${file}`);
+    setModalUserName(`${ownerLastName} ${ownerFirstName} ${ownerFatherName}`);
+    onOpen();
+  };
   return (
     <Center py={6}>
       <Stack
@@ -83,7 +162,13 @@ export default function Project({
         padding={4}
         h="full"
       >
-        <Flex flex={1} maxH={"240px"} justify={"center"}>
+        <Flex
+          flex={1}
+          maxH={"240px"}
+          justify={"center"}
+          onClick={handleOpenModal}
+          cursor={"pointer"}
+        >
           <Image
             objectFit="cover"
             boxSize="100%"
@@ -100,15 +185,7 @@ export default function Project({
           pt={2}
         >
           <Stack>
-            {approved ? (
-              <Text fontWeight={600} color={"green.200"} size="sm" mb={4}>
-                Подтверждено
-              </Text>
-            ) : (
-              <Text fontWeight={600} color={"red.200"} size="sm" mb={4}>
-                Не подтверждено
-              </Text>
-            )}
+            {approveState}
             <Heading fontSize={"2xl"} fontFamily={"body"}>
               {event}
             </Heading>
@@ -159,7 +236,7 @@ export default function Project({
                 _hover={{
                   bg: "green.500",
                 }}
-                onClick={() => handeApprove(true)}
+                onClick={() => handeApprove("1")}
               >
                 Подтвердить
               </Button>
@@ -175,7 +252,7 @@ export default function Project({
                 _focus={{
                   bg: "red.600",
                 }}
-                onClick={() => handeApprove(false)}
+                onClick={() => handeApprove("2")}
               >
                 Отклонить
               </Button>

@@ -10,18 +10,22 @@ import {
   Text,
   useColorModeValue,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 // Assets
 import BgSignUp from "assets/img/BgSignUp.png";
 import React, { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import axios from "axios";
-
+import { useRecoilState } from "recoil";
+import { userState } from "state";
 function SignUp() {
   const titleColor = useColorModeValue("teal.300", "teal.200");
   const textColor = useColorModeValue("gray.700", "white");
   const bgColor = useColorModeValue("white", "gray.700");
   const history = useHistory();
+  const [user, setUser] = useRecoilState(userState);
+  const toast = useToast();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
@@ -45,11 +49,22 @@ function SignUp() {
       });
 
       localStorage.setItem("token", user.data.token);
-      setSuccess(true);
+      setUser(user.data.result);
+      toast({
+        title: "Аккаунт успешно создан",
+        status: "success",
+        isClosable: true,
+        position: "bottom-left",
+      });
       history.push("/");
     } catch (err) {
-      setError(err);
-      setOpen(true);
+      toast({
+        title:
+          "Не удалось создать аккаунт, проверьте правильность введенных данных",
+        status: "error",
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
   };
 

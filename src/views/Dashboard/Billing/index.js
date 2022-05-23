@@ -1,5 +1,13 @@
 // Chakra imports
-import { Box, Flex, Grid, Icon } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Grid,
+  Icon,
+  Text,
+  SimpleGrid,
+  useColorModeValue,
+} from "@chakra-ui/react";
 // Assets
 import BackgroundCard1 from "assets/img/BackgroundCard1.png";
 import { MastercardIcon, VisaIcon } from "components/Icons/Icons";
@@ -17,78 +25,28 @@ import CreditCard from "./components/CreditCard";
 import Invoices from "./components/Invoices";
 import PaymentMethod from "./components/PaymentMethod";
 import PaymentStatistics from "./components/PaymentStatistics";
+import { ProductAddToCart } from "./components/Product";
 import Transactions from "./components/Transactions";
 
 function Billing() {
+  const bgColor = useColorModeValue("#F8F9FA", "gray.800");
+
   return (
-    <Flex direction='column' pt={{ base: "120px", md: "75px" }}>
-      <Grid templateColumns={{ sm: "1fr", lg: "2fr 1.2fr" }} templateRows='1fr'>
-        <Box>
-          <Grid
-            templateColumns={{
-              sm: "1fr",
-              md: "1fr 1fr",
-              xl: "1fr 1fr 1fr 1fr",
-            }}
-            templateRows={{ sm: "auto auto auto", md: "1fr auto", xl: "1fr" }}
-            gap='26px'>
-            <CreditCard
-              backgroundImage={BackgroundCard1}
-              title={"Purity UI"}
-              number={"7812 2139 0823 XXXX"}
-              validity={{
-                name: "VALID THRU",
-                data: "05/24",
-              }}
-              cvv={{
-                name: "CVV",
-                code: "09x",
-              }}
-              icon={
-                <Icon
-                  as={RiMastercardFill}
-                  w='48px'
-                  h='auto'
-                  color='gray.400'
-                />
-              }
-            />
-            <PaymentStatistics
-              icon={<Icon h={"24px"} w={"24px"} color='white' as={FaWallet} />}
-              title={"Salary"}
-              description={"Belong interactive"}
-              amount={2000}
-            />
-            <PaymentStatistics
-              icon={<Icon h={"24px"} w={"24px"} color='white' as={FaPaypal} />}
-              title={"Paypal"}
-              description={"Freelance Payment"}
-              amount={4550}
-            />
-          </Grid>
-          <PaymentMethod
-            title={"Payment Method"}
-            mastercard={{
-              icon: <MastercardIcon w='100%' h='100%' />,
-              number: "7812 2139 0823 XXXX",
-            }}
-            visa={{
-              icon: <VisaIcon w='100%' h='100%' />,
-              number: "7812 2139 0823 XXXX",
-            }}
-          />
-        </Box>
-        <Invoices title={"Invoices"} data={invoicesData} />
-      </Grid>
-      <Grid templateColumns={{ sm: "1fr", lg: "1.6fr 1.2fr" }}>
-        <BillingInformation title={"Billing Information"} data={billingData} />
-        <Transactions
-          title={"Your Transactions"}
-          date={"23 - 30 March"}
-          newestTransactions={newestTransactions}
-          olderTransactions={olderTransactions}
-        />
-      </Grid>
+    <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
+      <Box bg={bgColor} my="22px" borderRadius="12px">
+        <Text p="24px">
+          Для работы с этой страницей необходимо расширение Metamask.
+        </Text>
+      </Box>
+      <SimpleGrid columns={{ sm: 1, lg: 3, xl: 4 }} spacing="24px">
+        <ProductAddToCart rating={5} numReviews={100} />
+        <ProductAddToCart rating={5} numReviews={100} />
+        <ProductAddToCart rating={5} numReviews={100} />
+        <ProductAddToCart rating={5} numReviews={100} />
+        <ProductAddToCart rating={5} numReviews={100} />
+        <ProductAddToCart rating={5} numReviews={100} />
+        <ProductAddToCart rating={5} numReviews={100} />
+      </SimpleGrid>
     </Flex>
   );
 }
