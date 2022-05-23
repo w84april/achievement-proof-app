@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userState } from "state";
 import { getItems } from "api/get-items";
-export const useGetItems = (isApproved, search, result, sort) => {
+export const useGetItems = (approved, search, result, sort) => {
   const [user, setUser] = useRecoilState(userState);
   const { role } = user;
   const [isLoading, setIsLoading] = useState(false);
@@ -16,12 +16,11 @@ export const useGetItems = (isApproved, search, result, sort) => {
     if (!token) {
       return;
     }
-
+    console.log(role);
     const resultValue = result === "3" ? null : result;
-    const approved =
-      isApproved === "1" ? true : isApproved === "2" ? false : null;
+    const approvedValue = approved === "4" ? null : approved;
     const sortString = sort ? "DESC" : "ASC";
-    getItems(token, approved, search, resultValue, sortString, role)
+    getItems(token, approvedValue, search, resultValue, sortString, role)
       .then((items) => {
         setItems(items);
         setIsLoading(false);
@@ -32,7 +31,7 @@ export const useGetItems = (isApproved, search, result, sort) => {
           history.push("/auth/signin");
         }
       });
-  }, [isApproved, search, sort, result]);
+  }, [approved, search, sort, result]);
 
   useEffect(() => {
     setIsLoading(true);

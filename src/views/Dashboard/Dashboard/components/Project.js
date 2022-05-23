@@ -12,6 +12,7 @@ import { useRecoilState } from "recoil";
 import { userState } from "state";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { useMemo } from "react";
 export default function Project({
   id,
   projectName,
@@ -70,6 +71,28 @@ export default function Project({
     }
   };
 
+  const approveState = useMemo(() => {
+    switch (approved) {
+      case 1:
+        return (
+          <Text fontWeight={600} color={"green.200"} size="sm" mb={4}>
+            Подтверждено
+          </Text>
+        );
+      case 2:
+        return (
+          <Text fontWeight={600} color={"red.200"} size="sm" mb={4}>
+            Не подтверждено
+          </Text>
+        );
+      case 3:
+        return (
+          <Text fontWeight={600} color={"gray.400"} size="sm" mb={4}>
+            Ожидает подтверждения
+          </Text>
+        );
+    }
+  }, [approved]);
   return (
     <Center py={6}>
       <Stack
@@ -100,15 +123,7 @@ export default function Project({
           pt={2}
         >
           <Stack>
-            {approved ? (
-              <Text fontWeight={600} color={"green.200"} size="sm" mb={4}>
-                Подтверждено
-              </Text>
-            ) : (
-              <Text fontWeight={600} color={"red.200"} size="sm" mb={4}>
-                Не подтверждено
-              </Text>
-            )}
+            {approveState}
             <Heading fontSize={"2xl"} fontFamily={"body"}>
               {event}
             </Heading>
@@ -159,7 +174,7 @@ export default function Project({
                 _hover={{
                   bg: "green.500",
                 }}
-                onClick={() => handeApprove(true)}
+                onClick={() => handeApprove("1")}
               >
                 Подтвердить
               </Button>
@@ -175,7 +190,7 @@ export default function Project({
                 _focus={{
                   bg: "red.600",
                 }}
-                onClick={() => handeApprove(false)}
+                onClick={() => handeApprove("2")}
               >
                 Отклонить
               </Button>

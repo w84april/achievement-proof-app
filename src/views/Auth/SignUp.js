@@ -16,12 +16,15 @@ import BgSignUp from "assets/img/BgSignUp.png";
 import React, { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import axios from "axios";
-
+import { useRecoilState } from "recoil";
+import { userState } from "state";
 function SignUp() {
   const titleColor = useColorModeValue("teal.300", "teal.200");
   const textColor = useColorModeValue("gray.700", "white");
   const bgColor = useColorModeValue("white", "gray.700");
   const history = useHistory();
+  const [user, setUser] = useRecoilState(userState);
+
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
@@ -45,6 +48,7 @@ function SignUp() {
       });
 
       localStorage.setItem("token", user.data.token);
+      setUser(user.data.result);
       setSuccess(true);
       history.push("/");
     } catch (err) {

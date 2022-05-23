@@ -79,6 +79,9 @@ export default function Dashboard() {
                       Нет
                     </Radio>
                     <Radio colorScheme="blue" value="3">
+                      Ожидает
+                    </Radio>
+                    <Radio colorScheme="blue" value="4">
                       Показать все
                     </Radio>
                   </Stack>
