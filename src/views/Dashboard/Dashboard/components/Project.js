@@ -8,6 +8,8 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  useDisclosure,
+  Modal,
 } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
 import { userState } from "state";
@@ -25,6 +27,9 @@ export default function Project({
   ownerFatherName,
   result,
   file,
+  onOpen,
+  setModalImage,
+  setModalUserName,
 }) {
   const resultString = ["Победитель", "Призер", "Участник"];
   const [user, setUser] = useRecoilState(userState);
@@ -33,6 +38,7 @@ export default function Project({
   const { role } = user;
   const toast = useToast();
   axios.defaults.baseURL = process.env.REACT_APP_API;
+
   const token = localStorage.getItem("token");
   const handeApprove = async (approved) => {
     try {
@@ -136,6 +142,12 @@ export default function Project({
         );
     }
   }, [approved]);
+
+  const handleOpenModal = () => {
+    setModalImage(`${process.env.REACT_APP_API}/image/${file}`);
+    setModalUserName(`${ownerLastName} ${ownerFirstName} ${ownerFatherName}`);
+    onOpen();
+  };
   return (
     <Center py={6}>
       <Stack
@@ -149,7 +161,12 @@ export default function Project({
         padding={4}
         h="full"
       >
-        <Flex flex={1} maxH={"240px"} justify={"center"}>
+        <Flex
+          flex={1}
+          maxH={"240px"}
+          justify={"center"}
+          onClick={handleOpenModal}
+        >
           <Image
             objectFit="cover"
             boxSize="100%"
