@@ -27,12 +27,17 @@ import {
   ModalFooter,
 } from "@chakra-ui/react";
 // assets
-
+import ReactPaginate from "react-paginate";
 import React, { useState } from "react";
 import { useDebounce } from "hooks/use-debounce";
 import Project from "./components/Project";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@chakra-ui/icons";
 import { useGetItems } from "../../../hooks/use-get-items";
+import "./index.scss";
 export default function Dashboard() {
   const [isApproved, setIsApproved] = useState("3");
   const [search, setSearch] = useState("");
@@ -43,12 +48,14 @@ export default function Dashboard() {
   const [modalUserName, setModalUserName] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [fetchTrigger, setFetchTrigger] = useState(false);
-
+  const itemsPerPage = 10;
+  const [page, setPage] = useState(0);
   const { items, isLoading } = useGetItems(
     isApproved,
     debouncedSearch,
     result,
     sort,
+    page,
     fetchTrigger
   );
   console.log(items);
@@ -160,6 +167,22 @@ export default function Dashboard() {
               />
             ))}
         </SimpleGrid>
+        {items && items.rows && items.count && (
+          <Flex justifyContent="center" mt={4}>
+            <ReactPaginate
+              pageCount={Math.ceil(items.count / itemsPerPage)}
+              pageRangeDisplayed={2}
+              marginPagesDisplayed={2}
+              forcePage={page}
+              onPageChange={({ selected }) => {
+                setPage(selected);
+              }}
+              containerClassName="paginator"
+              previousLabel={<ChevronLeftIcon w={4} h={4} />}
+              nextLabel={<ChevronRightIcon w={4} h={4} />}
+            />
+          </Flex>
+        )}
       </Stack>
       <Modal onClose={onClose} size={"full"} isOpen={isOpen}>
         <ModalOverlay />
