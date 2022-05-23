@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userState } from "state";
 import { getItems } from "api/get-items";
-export const useGetItems = (approved, search, result, sort) => {
+export const useGetItems = (approved, search, result, sort, fetchTrigger) => {
   const [user, setUser] = useRecoilState(userState);
   const { role } = user;
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +31,7 @@ export const useGetItems = (approved, search, result, sort) => {
           history.push("/auth/signin");
         }
       });
-  }, [approved, search, sort, result]);
+  }, [approved, search, sort, result, fetchTrigger]);
 
   useEffect(() => {
     setIsLoading(true);

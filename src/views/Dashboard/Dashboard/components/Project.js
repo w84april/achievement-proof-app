@@ -30,10 +30,11 @@ export default function Project({
   onOpen,
   setModalImage,
   setModalUserName,
+  setFetchTrigger,
+  fetchTrigger,
 }) {
   const resultString = ["Победитель", "Призер", "Участник"];
   const [user, setUser] = useRecoilState(userState);
-  const [success, setSuccess] = useState(false);
   const history = useHistory();
   const { role } = user;
   const toast = useToast();
@@ -59,7 +60,7 @@ export default function Project({
         isClosable: true,
         position: "bottom-left",
       });
-      setSuccess(true);
+      setFetchTrigger(!fetchTrigger);
     } catch (err) {
       if (err.response.status === 403) {
         toast({
@@ -99,7 +100,7 @@ export default function Project({
         isClosable: true,
         position: "bottom-left",
       });
-      setSuccess(true);
+      setFetchTrigger(!fetchTrigger);
     } catch (err) {
       if (err.response.status === 403) {
         toast({
@@ -166,6 +167,7 @@ export default function Project({
           maxH={"240px"}
           justify={"center"}
           onClick={handleOpenModal}
+          cursor={"pointer"}
         >
           <Image
             objectFit="cover"

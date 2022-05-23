@@ -42,12 +42,14 @@ export default function Dashboard() {
   const [modalImage, setModalImage] = useState("");
   const [modalUserName, setModalUserName] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [fetchTrigger, setFetchTrigger] = useState(false);
 
   const { items, isLoading } = useGetItems(
     isApproved,
     debouncedSearch,
     result,
-    sort
+    sort,
+    fetchTrigger
   );
   console.log(items);
   return (
@@ -153,6 +155,8 @@ export default function Dashboard() {
                 onOpen={onOpen}
                 setModalImage={setModalImage}
                 setModalUserName={setModalUserName}
+                setFetchTrigger={setFetchTrigger}
+                fetchTrigger={fetchTrigger}
               />
             ))}
         </SimpleGrid>
