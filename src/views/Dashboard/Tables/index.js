@@ -14,6 +14,7 @@ import {
   useColorModeValue,
   Link,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 import { useState, useRef } from "react";
 import { ViewIcon, ViewOffIcon, AttachmentIcon } from "@chakra-ui/icons";
@@ -52,6 +53,8 @@ const FileUpload = (props) => {
 export default function SignupCard() {
   const [user, setUser] = useRecoilState(userState);
   const token = localStorage.getItem("token");
+  const toast = useToast();
+
   const history = useHistory();
   const {
     register,
@@ -70,6 +73,7 @@ export default function SignupCard() {
       formData.append("result", result);
       formData.append("uploaded_file", uploaded_file[0]);
       formData.append("owner", user.id);
+      console.log("token", token);
       const achievement = await axios({
         method: "post",
         url: "/achievement",
@@ -80,12 +84,23 @@ export default function SignupCard() {
         data: formData,
       });
       console.log(achievement);
-      if (achievement.success) {
-        console.log("success");
+      if (achievement.status === 200) {
+        toast({
+          title: "Заявка создана",
+          status: "success",
+          isClosable: true,
+          position: "bottom-left",
+        });
       }
     } catch (err) {
       if (err.response.status === 403) {
         history.push("/auth/signin");
+        toast({
+          title: "Вы не авторизованы",
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
       }
     }
   });

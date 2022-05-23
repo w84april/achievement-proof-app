@@ -10,6 +10,7 @@ import {
   Text,
   useColorModeValue,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 // Assets
 import BgSignUp from "assets/img/BgSignUp.png";
@@ -24,7 +25,7 @@ function SignUp() {
   const bgColor = useColorModeValue("white", "gray.700");
   const history = useHistory();
   const [user, setUser] = useRecoilState(userState);
-
+  const toast = useToast();
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
@@ -49,11 +50,21 @@ function SignUp() {
 
       localStorage.setItem("token", user.data.token);
       setUser(user.data.result);
-      setSuccess(true);
+      toast({
+        title: "Аккаунт успешно создан",
+        status: "success",
+        isClosable: true,
+        position: "bottom-left",
+      });
       history.push("/");
     } catch (err) {
-      setError(err);
-      setOpen(true);
+      toast({
+        title:
+          "Не удалось создать аккаунт, проверьте правильность введенных данных",
+        status: "error",
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
   };
 

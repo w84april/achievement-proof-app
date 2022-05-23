@@ -7,12 +7,13 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useRecoilState } from "recoil";
 import { userState } from "state";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 export default function Project({
   id,
   projectName,
@@ -27,8 +28,10 @@ export default function Project({
 }) {
   const resultString = ["Победитель", "Призер", "Участник"];
   const [user, setUser] = useRecoilState(userState);
+  const [success, setSuccess] = useState(false);
   const history = useHistory();
   const { role } = user;
+  const toast = useToast();
   axios.defaults.baseURL = process.env.REACT_APP_API;
   const token = localStorage.getItem("token");
   const handeApprove = async (approved) => {
@@ -44,9 +47,29 @@ export default function Project({
           approved,
         },
       });
+      toast({
+        title: `Успешно ${approved === "1" ? "подтверждено" : "отклонено"}`,
+        status: "success",
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setSuccess(true);
     } catch (err) {
       if (err.response.status === 403) {
+        toast({
+          title: "Необходима авторизация",
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
         history.push("/auth/signin");
+      } else {
+        toast({
+          title: `Ошибка ${approved === "1" ? "подтверждения" : "отклонения"}`,
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
       }
     }
   };
@@ -64,9 +87,29 @@ export default function Project({
           id,
         },
       });
+      toast({
+        title: "Успешно удалено",
+        status: "success",
+        isClosable: true,
+        position: "bottom-left",
+      });
+      setSuccess(true);
     } catch (err) {
       if (err.response.status === 403) {
+        toast({
+          title: "Необходима авторизация",
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
         history.push("/auth/signin");
+      } else {
+        toast({
+          title: "Ошибка удаления",
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
       }
     }
   };

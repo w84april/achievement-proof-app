@@ -13,6 +13,7 @@ import {
   Text,
   useColorModeValue,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 // Assets
 import { NavLink, useHistory } from "react-router-dom";
@@ -25,10 +26,9 @@ function SignIn() {
   const titleColor = useColorModeValue("teal.300", "teal.200");
   const textColor = useColorModeValue("gray.400", "white");
   const [user, setUser] = useRecoilState(userState);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
-  const [open, setOpen] = useState(false);
   const history = useHistory();
+  const toast = useToast();
+
   axios.defaults.baseURL = process.env.REACT_APP_API;
 
   const onSubmit = async (e) => {
@@ -48,11 +48,20 @@ function SignIn() {
 
       localStorage.setItem("token", user.data.token);
       setUser(user.data.result);
-      setSuccess(true);
+      toast({
+        title: "Успешно авторизован",
+        status: "success",
+        isClosable: true,
+        position: "bottom-left",
+      });
       history.push("/");
     } catch (err) {
-      setError(err);
-      setOpen(true);
+      toast({
+        title: "Проверьте правильность введенных данных или зарегистрируйтесь",
+        status: "error",
+        isClosable: true,
+        position: "bottom-left",
+      });
     }
   };
 

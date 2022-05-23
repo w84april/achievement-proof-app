@@ -26,7 +26,7 @@ import Project from "./components/Project";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useGetItems } from "../../../hooks/use-get-items";
 export default function Dashboard() {
-  const [isApproved, setIsApproved] = useState("2");
+  const [isApproved, setIsApproved] = useState("3");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(false);
   const [result, setResult] = useState("3");
