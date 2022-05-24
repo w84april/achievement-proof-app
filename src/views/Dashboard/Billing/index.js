@@ -2,51 +2,75 @@
 import {
   Box,
   Flex,
-  Grid,
-  Icon,
   Text,
   SimpleGrid,
   useColorModeValue,
+  Button,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 // Assets
-import BackgroundCard1 from "assets/img/BackgroundCard1.png";
-import { MastercardIcon, VisaIcon } from "components/Icons/Icons";
+import { useRecoilState } from "recoil";
+import { userState } from "state";
 import React from "react";
-import { FaPaypal, FaWallet } from "react-icons/fa";
-import { RiMastercardFill } from "react-icons/ri";
-import {
-  billingData,
-  invoicesData,
-  newestTransactions,
-  olderTransactions,
-} from "variables/general";
-import BillingInformation from "./components/BillingInformation";
-import CreditCard from "./components/CreditCard";
-import Invoices from "./components/Invoices";
-import PaymentMethod from "./components/PaymentMethod";
-import PaymentStatistics from "./components/PaymentStatistics";
 import { ProductAddToCart } from "./components/Product";
-import Transactions from "./components/Transactions";
-
+import { ModalAddProductContent } from "./components/ModalAddProductContent";
+import { useGetProducts } from "../../../hooks/use-get-products";
 function Billing() {
   const bgColor = useColorModeValue("#F8F9FA", "gray.800");
-
+  const { products, isLoading } = useGetProducts();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [user, setUser] = useRecoilState(userState);
+  const { role } = user;
+  console.log(role);
+  console.log(products);
   return (
-    <Flex direction="column" pt={{ base: "120px", md: "75px" }}>
-      <Box bg={bgColor} my="22px" borderRadius="12px">
+    <Flex direction="column" pt={100} pl={8}>
+      {/* <Box bg={bgColor} my="22px" borderRadius="12px">
         <Text p="24px">
           Для работы с этой страницей необходимо расширение Metamask.
         </Text>
-      </Box>
-      <SimpleGrid columns={{ sm: 1, lg: 3, xl: 4 }} spacing="24px">
-        <ProductAddToCart rating={5} numReviews={100} />
-        <ProductAddToCart rating={5} numReviews={100} />
-        <ProductAddToCart rating={5} numReviews={100} />
-        <ProductAddToCart rating={5} numReviews={100} />
-        <ProductAddToCart rating={5} numReviews={100} />
-        <ProductAddToCart rating={5} numReviews={100} />
-        <ProductAddToCart rating={5} numReviews={100} />
-      </SimpleGrid>
+      </Box> */}
+      {role === 1 && (
+        <Box>
+          <Button
+            colorScheme="teal"
+            borderColor="teal.300"
+            color="teal.300"
+            variant="outline"
+            fontSize="md"
+            p="8px 32px"
+            onClick={onOpen}
+          >
+            Добавить товар
+          </Button>
+        </Box>
+      )}
+
+      <Flex pt={16}>
+        <SimpleGrid columns={{ sm: 1, lg: 3, xl: 4 }} spacing="24px">
+          {products &&
+            products.rows.map((product) => (
+              <ProductAddToCart key={product.id} {...product} />
+            ))}
+        </SimpleGrid>
+      </Flex>
+      <Modal onClose={onClose} size={"lg"} isOpen={isOpen}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <ModalAddProductContent />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Flex>
   );
 }
