@@ -21,7 +21,7 @@ export const useGetProducts = () => {
         setIsLoading(false);
       })
       .catch((err) => {
-        if (err.response.status === 403) {
+        if (err.response.status === 403 || !err.response.status) {
           history.push("/auth/signin");
         }
       });

@@ -108,7 +108,7 @@ export const ModalAddProductContent = () => {
         });
       }
     } catch (err) {
-      if (err.response.status === 403) {
+      if (err.response.status === 403 || !err.response.status) {
         history.push("/auth/signin");
         toast({
           title: "Вы не авторизованы",
@@ -127,12 +127,7 @@ export const ModalAddProductContent = () => {
     }
   });
   return (
-    <Box
-      rounded={"lg"}
-      bg={useColorModeValue("white", "gray.700")}
-      boxShadow={"lg"}
-      p={8}
-    >
+    <Box rounded={"lg"} bg={useColorModeValue("white", "gray.700")} p={4}>
       <form method="post" onSubmit={onSubmit} encType="multipart/form-data">
         <Stack spacing={4}>
           <HStack>

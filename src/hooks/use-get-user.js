@@ -17,7 +17,8 @@ export const useGetUser = () => {
         setIsLoading(false);
       })
       .catch((err) => {
-        if (err.response.status === 403) {
+        console.log(err);
+        if (err.response.status === 403 || !err.response.status) {
           history.push("/auth/signin");
         }
       });

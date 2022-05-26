@@ -62,7 +62,7 @@ export default function Project({
       });
       setFetchTrigger(!fetchTrigger);
     } catch (err) {
-      if (err.response.status === 403) {
+      if (err.response.status === 403 || !err.response.status) {
         toast({
           title: "Необходима авторизация",
           status: "error",
@@ -102,7 +102,7 @@ export default function Project({
       });
       setFetchTrigger(!fetchTrigger);
     } catch (err) {
-      if (err.response.status === 403) {
+      if (err.response.status === 403 || !err.response.status) {
         toast({
           title: "Необходима авторизация",
           status: "error",
@@ -184,18 +184,20 @@ export default function Project({
           p={1}
           pt={2}
         >
-          <Stack>
+          <Stack h={"100%"}>
             {approveState}
             <Heading fontSize={"2xl"} fontFamily={"body"}>
               {event}
             </Heading>
 
-            <Text color="gray.400" fontSize="sm" fontWeight="semibold">
-              Команда:{" "}
-              <Text as="span" color="gray.500">
-                {team}
+            {team && (
+              <Text color="gray.400" fontSize="sm" fontWeight="semibold">
+                Команда:{" "}
+                <Text as="span" color="gray.500">
+                  {team}
+                </Text>
               </Text>
-            </Text>
+            )}
             <Text color="gray.400" fontSize="sm" fontWeight="semibold">
               Проект:{" "}
               <Text as="span" color="gray.500">
@@ -258,6 +260,7 @@ export default function Project({
               </Button>
             </Stack>
           )}
+
           <Stack
             width={"100%"}
             mt={"2rem"}
@@ -270,7 +273,6 @@ export default function Project({
               flex={1}
               fontSize={"sm"}
               rounded={"full"}
-              width={"100%"}
               bg={"red.400"}
               color={"white"}
               _hover={{

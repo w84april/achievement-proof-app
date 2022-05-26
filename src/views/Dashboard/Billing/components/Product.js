@@ -79,10 +79,11 @@ export const ProductAddToCart = ({ productName, file, quantity, price }) => {
             >
               {productName}
             </Box>
-
-            <chakra.a href={"#"} display={"flex"}>
-              <Icon as={FiShoppingCart} h={4} w={4} alignSelf={"center"} />
-            </chakra.a>
+            {quantity && (
+              <chakra.a href={"#"} display={"flex"}>
+                <Icon as={FiShoppingCart} h={4} w={4} alignSelf={"center"} />
+              </chakra.a>
+            )}
           </Flex>
 
           <Flex justifyContent="space-between" alignItems="center">
@@ -91,11 +92,13 @@ export const ProductAddToCart = ({ productName, file, quantity, price }) => {
                 {price} SFEDU
               </Box>
             </Box>
-            <Box fontSize="lg" color={useColorModeValue("gray.800", "white")}>
-              <Box as="span" color={"black"} fontSize="sm">
-                {quantity} шт.
+            {quantity && (
+              <Box fontSize="lg" color={useColorModeValue("gray.800", "white")}>
+                <Box as="span" color={"black"} fontSize="sm">
+                  {quantity} шт.
+                </Box>
               </Box>
-            </Box>
+            )}
           </Flex>
         </Box>
       </Box>

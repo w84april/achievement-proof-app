@@ -58,13 +58,27 @@ function SignUp() {
       });
       history.push("/");
     } catch (err) {
-      toast({
-        title:
-          "Не удалось создать аккаунт, проверьте правильность введенных данных",
-        status: "error",
-        isClosable: true,
-        position: "bottom-left",
-      });
+      console.log(err);
+      if (
+        err.response.data &&
+        err.response.data.error === "User with such email already exists"
+      ) {
+        toast({
+          title:
+            "Не удалось создать аккаунт, пользователь с таким адресом электронной почты уже существует",
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
+      } else {
+        toast({
+          title:
+            "Не удалось создать аккаунт, проверьте правильность введенных данных",
+          status: "error",
+          isClosable: true,
+          position: "bottom-left",
+        });
+      }
     }
   };
 

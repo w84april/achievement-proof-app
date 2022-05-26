@@ -93,7 +93,7 @@ export default function SignupCard() {
         });
       }
     } catch (err) {
-      if (err.response.status === 403) {
+      if (err.response.status === 403 || !err.response.status) {
         history.push("/auth/signin");
         toast({
           title: "Вы не авторизованы",
@@ -124,10 +124,10 @@ export default function SignupCard() {
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
           <Heading fontSize={"4xl"} textAlign={"center"}>
-            Добавить проект
+            Добавить достижение
           </Heading>
           <Text fontSize={"lg"} color={"gray.600"}>
-            Проект будет отмечен как подтвержденный после одобрения
+            Достижение будет отмечено как подтвержденное после одобрения
             администраницей
           </Text>
         </Stack>

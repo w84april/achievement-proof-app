@@ -8,21 +8,18 @@ import {
   FormLabel,
   Heading,
   Input,
-  Link,
-  Switch,
   Text,
   useColorModeValue,
   Stack,
   useToast,
 } from "@chakra-ui/react";
-// Assets
+
 import { NavLink, useHistory } from "react-router-dom";
 import { userState } from "../../state/index";
 import { useRecoilState } from "recoil";
 import axios from "axios";
 
 function SignIn() {
-  // Chakra color mode
   const titleColor = useColorModeValue("teal.300", "teal.200");
   const textColor = useColorModeValue("gray.400", "white");
   const [user, setUser] = useRecoilState(userState);
@@ -109,7 +106,7 @@ function SignIn() {
             <form onSubmit={onSubmit}>
               <FormControl isRequired>
                 <FormLabel ms="4px" fontSize="sm" fontWeight="normal">
-                  Адрес электронной почти
+                  Адрес электронной почты
                 </FormLabel>
                 <Input
                   borderRadius="15px"
