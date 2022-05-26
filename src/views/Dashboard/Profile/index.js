@@ -40,7 +40,9 @@ function Profile() {
           fatherName={fatherName}
           email={email}
           role={Role[role]}
+          addAddress
         />
+        <ProfileInformation product />
       </Grid>
     </Flex>
   );
