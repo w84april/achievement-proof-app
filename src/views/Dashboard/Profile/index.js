@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import ProfileInformation from "./components/ProfileInformation";
 import { useRecoilState } from "recoil";
 import { userState } from "../../../state/index";
+import { useWeb3 } from "hooks/use-web3";
 
 const Role = {
   0: "Пользователь",
@@ -20,9 +21,13 @@ function Profile() {
     "linear-gradient(112.83deg, rgba(255, 255, 255, 0.21) 0%, rgba(255, 255, 255, 0) 110.84%)"
   );
   const [user, setUser] = useRecoilState(userState);
+  const { id } = user;
   const { userInfo, isLoading } = useGetUser();
-
-  const { firstName, lastName, fatherName, email, role } = userInfo || {};
+  const { firstName, lastName, fatherName, email, role, address } =
+    userInfo || {};
+  const { userProducts } = useWeb3();
+  console.log(address);
+  console.log(userProducts);
   return (
     <Flex direction="column">
       <Header
@@ -39,10 +44,13 @@ function Profile() {
           lastName={lastName}
           fatherName={fatherName}
           email={email}
+          address={address}
           role={Role[role]}
           addAddress
         />
-        <ProfileInformation product />
+        {userProducts && userProducts.length ? (
+          <ProfileInformation products={userProducts} />
+        ) : null}
       </Grid>
     </Flex>
   );

@@ -8,15 +8,17 @@ import {
   Input,
   Button,
   Divider,
+  useToast,
+  Box,
 } from "@chakra-ui/react";
 // Custom components
 import Card from "components/Card/Card";
 import CardBody from "components/Card/CardBody";
 import CardHeader from "components/Card/CardHeader";
-import React from "react";
+import React, { useState } from "react";
 import { ProductAddToCart } from "views/Dashboard/Billing/components/Product";
-import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
-
+import Web3 from "web3";
+import axios from "axios";
 const ProfileInformation = ({
   title,
   description,
@@ -26,10 +28,42 @@ const ProfileInformation = ({
   role,
   email,
   addAddress,
-  product,
+  address,
+  products,
 }) => {
   // Chakra color mode
   const textColor = useColorModeValue("gray.700", "white");
+  const [typedAddress, setTypedAddress] = useState("");
+  const toast = useToast();
+  const token = localStorage.getItem("token");
+  const handleAddAddress = async (e) => {
+    e.preventDefault();
+    try {
+      await axios({
+        method: "post",
+        url: "/address",
+        headers: {
+          Authorization: token,
+        },
+        data: { address: typedAddress },
+      });
+
+      toast({
+        title: "Адрес добавлен",
+        status: "success",
+        isClosable: true,
+        position: "bottom-left",
+      });
+    } catch (err) {
+      console.log(err);
+      toast({
+        title: "Не удалось добавить адрес",
+        status: "error",
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  };
 
   return (
     <Card p="16px" my={{ sm: "24px", xl: "0px" }}>
@@ -99,6 +133,16 @@ const ProfileInformation = ({
               </Text>
             </Flex>
           )}
+          {address && (
+            <Flex align="center" mb="18px">
+              <Text fontSize="md" color={textColor} fontWeight="bold" me="10px">
+                Адрес:{" "}
+              </Text>
+              <Text fontSize="md" color="gray.500" fontWeight="400">
+                {address}
+              </Text>
+            </Flex>
+          )}
           <Divider />
           {addAddress && (
             <>
@@ -108,6 +152,7 @@ const ProfileInformation = ({
                 size="sm"
                 id="password"
                 mt={6}
+                onChange={(e) => setTypedAddress(e.target.value)}
               />
               <Button
                 fontSize="14px"
@@ -118,6 +163,8 @@ const ProfileInformation = ({
                 mb="20px"
                 color="white"
                 mt="20px"
+                disabled={!Web3.utils.isAddress(typedAddress)}
+                onClick={handleAddAddress}
                 _hover={{
                   bg: "teal.200",
                 }}
@@ -129,13 +176,8 @@ const ProfileInformation = ({
               </Button>
             </>
           )}
-          {product && (
-            <ProductAddToCart
-              price={10}
-              productName={"Кружка ITPremium"}
-              file={"ea616747352f55e8fefc454a27e9bf15"}
-            />
-          )}
+          {products &&
+            products.map((product, i) => <Box key={i}>{product[0]}</Box>)}
         </Flex>
       </CardBody>
     </Card>

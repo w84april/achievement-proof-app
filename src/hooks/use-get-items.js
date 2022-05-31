@@ -34,7 +34,7 @@ export const useGetItems = (
       })
       .catch((err) => {
         console.log(err);
-        if (err.response.status === 403 || err.response.status === 500) {
+        if (!err.response.status === 403 || err.response.status === 500) {
           history.push("/auth/signin");
         }
       });

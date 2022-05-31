@@ -1,56 +1,49 @@
 import {
   Flex,
-  Circle,
   Box,
   Image,
-  Badge,
   useColorModeValue,
   Icon,
-  chakra,
-  Tooltip,
+  IconButton,
 } from "@chakra-ui/react";
-import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
 import { FiShoppingCart } from "react-icons/fi";
+import { useWeb3 } from "hooks/use-web3";
+import Big from "big.js";
+import axios from "axios";
 
-const data = {
-  isNew: true,
-  imageURL:
-    "https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=4600&q=80",
-  name: "Wayfarer Classic",
-  price: 4.5,
-  rating: 4.2,
-  numReviews: 34,
-};
-
-const Rating = ({ rating, numReviews }) => {
-  return (
-    <Box d="flex" alignItems="center">
-      {Array(5)
-        .fill("")
-        .map((_, i) => {
-          const roundedRating = Math.round(rating * 2) / 2;
-          if (roundedRating - i >= 1) {
-            return (
-              <BsStarFill
-                key={i}
-                style={{ marginLeft: "1" }}
-                color={i < rating ? "teal.500" : "gray.300"}
-              />
-            );
-          }
-          if (roundedRating - i === 0.5) {
-            return <BsStarHalf key={i} style={{ marginLeft: "1" }} />;
-          }
-          return <BsStar key={i} style={{ marginLeft: "1" }} />;
-        })}
-      <Box as="span" ml="2" color="gray.600" fontSize="sm">
-        {numReviews} review{numReviews > 1 && "s"}
-      </Box>
-    </Box>
-  );
-};
-
-export const ProductAddToCart = ({ productName, file, quantity, price }) => {
+export const ProductAddToCart = ({
+  productName,
+  file,
+  quantity,
+  price,
+  id,
+}) => {
+  const { contract, account } = useWeb3();
+  const token = localStorage.getItem("token");
+  const handleBuy = async () => {
+    try {
+      await contract.methods
+        .buyProduct(
+          Big(price)
+            .mul(10 ** 18)
+            .toFixed(),
+          id
+        )
+        .send({ from: account, gas: 4700000, gasPrice: 8000000000 });
+      await axios({
+        method: "patch",
+        url: "/buy",
+        headers: {
+          Authorization: token,
+        },
+        params: {
+          id,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <Flex w="full" alignItems="center" justifyContent="center">
       <Box
@@ -66,10 +59,17 @@ export const ProductAddToCart = ({ productName, file, quantity, price }) => {
           alt="product-img"
           roundedTop="lg"
           maxW={200}
+          margin={"0 auto"}
+          mt={4}
         />
 
         <Box p="4">
-          <Flex mt="1" justifyContent="space-between" alignContent="center">
+          <Flex
+            mt="1"
+            justifyContent="space-between"
+            minW={200}
+            alignItems="center"
+          >
             <Box
               fontSize="sm"
               fontWeight="semibold"
@@ -80,9 +80,9 @@ export const ProductAddToCart = ({ productName, file, quantity, price }) => {
               {productName}
             </Box>
             {quantity && (
-              <chakra.a href={"#"} display={"flex"}>
+              <IconButton onClick={handleBuy}>
                 <Icon as={FiShoppingCart} h={4} w={4} alignSelf={"center"} />
-              </chakra.a>
+              </IconButton>
             )}
           </Flex>
 

@@ -15,7 +15,9 @@ import { useRecoilState } from "recoil";
 import { userState } from "state";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useWeb3 } from "hooks/use-web3";
+import Big from "big.js";
 export default function Project({
   id,
   projectName,
@@ -27,6 +29,7 @@ export default function Project({
   ownerFatherName,
   result,
   file,
+  address,
   onOpen,
   setModalImage,
   setModalUserName,
@@ -37,12 +40,24 @@ export default function Project({
   const [user, setUser] = useRecoilState(userState);
   const history = useHistory();
   const { role } = user;
+  const { contract, account } = useWeb3();
+  console.log(account);
   const toast = useToast();
   axios.defaults.baseURL = process.env.REACT_APP_API;
-
+  const resultAward = [30, 20, 10];
   const token = localStorage.getItem("token");
   const handeApprove = async (approved) => {
     try {
+      if (address) {
+        await contract.methods
+          .transfer(
+            address,
+            Big(resultAward[result])
+              .mul(10 ** 18)
+              .toFixed()
+          )
+          .send({ from: account, gas: 4700000, gasPrice: 8000000000 });
+      }
       await axios({
         method: "patch",
         url: "/achievement",
@@ -62,6 +77,7 @@ export default function Project({
       });
       setFetchTrigger(!fetchTrigger);
     } catch (err) {
+      console.log(err);
       if (err.response.status === 403 || !err.response.status) {
         toast({
           title: "Необходима авторизация",
